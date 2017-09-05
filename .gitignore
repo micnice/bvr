@@ -35,3 +35,5 @@
 *.DS_Store
 *.metadata
 /.idea/workspace.xml
+
+#Add files to be ignred and comment why ignoring them
