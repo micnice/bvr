@@ -1,0 +1,40 @@
+Verification:
+        - Add Address on verification output data
+        - Send SMS after redemption of all delivery vouchers
+        - Request mobile number to be captured before redemption
+
+Upload of Data CSV:
+        - Add column for Area
+
+Add Claim:
+        - Add claim should be accessed from a list of Redeemed Vouchers. The Add claim form will now 
+          be automatically populated by details of the redeemed voucher
+        - Automation of EDD calculation (LMP + 280 days)
+        - Calendar control for LMP
+        - Add Claim Form Serial Number
+        - Service Offered should be automatically get populated from selected Voucher Type
+        - Service charge to be the amount populated from selected Voucher type
+        - Add field for Age which will be automatically calculated from DOB or vice-vesa
+        - Calendar control on Date of birth
+
+Claims Awaiting: 
+        - Patient's name
+        - Service Offered should have full name of Voucher type
+
+Invoice:
+        - Invoice should indicate the period like April - June 2015
+        - Change Invoice Quality payment to reflect the Quality Payment schedule
+
+
+Reports:
+        - Include Reports
+        - List of Redeemed Vouchers
+        - 
+
+Voucher Types:
+        - Add $10 and $20 Gift tokens as voucher types
+
+
+
+
+
