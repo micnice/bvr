@@ -74,12 +74,18 @@ if($vserial==0){
                     $resultRedeem = pg_query($conn, $sqlRedeem);
                     $rowRedeem = pg_fetch_row($resultRedeem);
                     $redeemDate = str_replace('-','/',$rowRedeem[0]);
+
+    $sqlRedeemRef = "select ref from redeemedvouchers where redeemserial = $voucherserial and vouchertype = $vouchertype and nationalid = '$nationalid'";
+		    $resultRedeemRef = pg_query($conn, $sqlRedeemRef);
+		    $rowRedeemRef = pg_fetch_row($resultRedeemRef);
+		    $redeemRef = $rowRedeemRef[0];
+
     ?>
         <tr>
             <td><?php echo $i+1; ?></td>
            <td><?php echo $redeemDate; ?> </td>
            <td><?php echo $row["voucherserial"]; ?> </td>
-           <td><?php echo $row["ref"]; ?> </td>
+           <td><?php echo $redeemRef; ?> </td>
            <td><?php echo $row["serviceoffered"]; ?> </td>
            <td><?php echo $row["facilityname"]; ?> </td>
            <td><?php echo $row["patientid"]; ?> </td>
