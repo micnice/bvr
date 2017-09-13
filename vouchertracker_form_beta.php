@@ -13,7 +13,7 @@ if (strcmp($_SESSION['login'], 'false') == 0) {
           media="screen">
 </head>
 <body>
-<form action="vouchertracker_expected.php" method="POST">
+<form action="vouchertracker_beta.php" method="POST">
     <div align="center"><h3>Track Vouchers</h3><br/>
         <table style="margin:auto auto;background-color: #E0F277;width: 400px; text-align: left">
             <tr>

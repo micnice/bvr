@@ -1,20 +1,20 @@
 <?php
-        session_start();
+session_start();
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Beneficiary Voucher Repository System</title>
-<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Beneficiary Voucher Repository System</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 </head>
-<body> 
-    
+<body>
+
 <form action="partially_redeemed.php" method="POST">
-<div align="center"><h3>Partially Redeemed Vouchers</h3><br />
-    <?php include 'orgunit_period_select2.php'; ?>
-</div>
+    <div align="center"><h3>Partially Redeemed Vouchers</h3><br/>
+      <?php include 'orgunit_period_select2.php'; ?>
+    </div>
 </form>
-    
-    <?php include 'footer.php'; ?>
-    </body>
+
+<?php include 'footer.php'; ?>
+</body>
 </html>

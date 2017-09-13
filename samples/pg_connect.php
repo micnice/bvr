@@ -5,31 +5,31 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-        <?php
-        include_once 'dbconnect.php';
-        
-        pg_query($conn, "select * from users");
-        /*pg_query($conn, "copy bar from stdin");
-        pg_put_line($conn, "3\thello world\t4.5\n");
-        pg_put_line($conn, "4\tgoodbye world\t7.11\n");
-        pg_put_line($conn, "\\.\n");
-        pg_end_copy($conn);*/
-        
-        $query = "SELECT * FROM users";   
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<?php
+include_once 'dbconnect.php';
 
-        $result = pg_exec($conn, $query);   
+pg_query($conn, "select * from users");
+/*pg_query($conn, "copy bar from stdin");
+pg_put_line($conn, "3\thello world\t4.5\n");
+pg_put_line($conn, "4\tgoodbye world\t7.11\n");
+pg_put_line($conn, "\\.\n");
+pg_end_copy($conn);*/
 
-        echo "Number of rows: " . pg_numrows($result);   
+$query = "SELECT * FROM users";
 
-        pg_freeresult($result);   
+$result = pg_exec($conn, $query);
 
-        pg_close($conn);   
+echo "Number of rows: ".pg_numrows($result);
 
-        ?>
-    </body>
+pg_freeresult($result);
+
+pg_close($conn);
+
+?>
+</body>
 </html>

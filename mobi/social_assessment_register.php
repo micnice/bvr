@@ -1,103 +1,133 @@
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN"
+        "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <?php
 session_start();
-if(strcmp($_SESSION['login'], 'false')==0){
-    header('Location: index.php');
+if (strcmp($_SESSION['login'], 'false') == 0) {
+  header('Location: index.php');
 }
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Welcome to the Beneficiary Voucher Repository System</title>
-        <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen">
-    </head>
-    <body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Welcome to the Beneficiary Voucher Repository System</title>
+    <link rel="stylesheet" href="../css/style.css" type="text/css"
+          media="screen">
+</head>
+<body>
 <?php
 include_once 'dbconnect.php';
 
-$nationalid=trim($_POST['nationalid']);
-$beneficiary=trim($_POST['beneficiary']);
+$nationalid = trim($_POST['nationalid']);
+$beneficiary = trim($_POST['beneficiary']);
 
-include_once 'generate_nationalid.php';          
+include_once 'generate_nationalid.php';
 
-$dob=$_POST['dob'];
-if($dob==''){$dob='';}
+$dob = $_POST['dob'];
+if ($dob == '') {
+  $dob = '';
+}
 
-$lmp=$_POST['lmp'];
-if($lmp==''){$lmp='';}
+$lmp = $_POST['lmp'];
+if ($lmp == '') {
+  $lmp = '';
+}
 
-$edd=$_POST['edd'];
-if($edd==''){$edd='';}
+$edd = $_POST['edd'];
+if ($edd == '') {
+  $edd = '';
+}
 
-$surname=$_POST['surname'];
+$surname = $_POST['surname'];
 
-$firstname=$_POST['firstname'];
+$firstname = $_POST['firstname'];
 
-$sex="F";
+$sex = "F";
 
-$guardian=$_POST['guardian'];
-if($guardian==''){$guardian='';}
+$guardian = $_POST['guardian'];
+if ($guardian == '') {
+  $guardian = '';
+}
 
-$maritalstatus=$_POST['maritalstatus'];
-if($maritalstatus==''){$maritalstatus='';}
+$maritalstatus = $_POST['maritalstatus'];
+if ($maritalstatus == '') {
+  $maritalstatus = '';
+}
 
-$parity=$_POST['parity'];
-if($parity==''){$parity='';}
+$parity = $_POST['parity'];
+if ($parity == '') {
+  $parity = '';
+}
 
-$location=$_POST['location'];
-if($location==''){$location='';}
+$location = $_POST['location'];
+if ($location == '') {
+  $location = '';
+}
 
-$village=$_POST['village'];
-if($village==''){$village='';}
+$village = $_POST['village'];
+if ($village == '') {
+  $village = '';
+}
 
-$postaladdress=$_POST['postaladdress'];
-if($postaladdress==''){$postaladdress='';}
+$postaladdress = $_POST['postaladdress'];
+if ($postaladdress == '') {
+  $postaladdress = '';
+}
 
-$serialno=$_POST['serialno'];
-if($serialno==''){$serialno='';}
+$serialno = $_POST['serialno'];
+if ($serialno == '') {
+  $serialno = '';
+}
 
-$phone=$_POST['phone'];
-if($phone==''){$phone='null';}
+$phone = $_POST['phone'];
+if ($phone == '') {
+  $phone = 'null';
+}
 
-$city=$_POST['city'];
-if($city==''){$city='';}
-         
+$city = $_POST['city'];
+if ($city == '') {
+  $city = '';
+}
+
 $username = $_SESSION['username'];
 $dateadded = date("d/m/Y");
 
-if(strcmp($beneficiary,'update')==0){
-    $query = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
-            . ", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd' where nationalid='$nationalid'";  
-    
+if (strcmp($beneficiary, 'update') == 0) {
+  $query
+      = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
+      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd' where nationalid='$nationalid'";
+
+  //echo '<br />'.$query.'<br />';
+  $result = pg_query($query);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query: ".$errormessage;
+    exit();
+  }
+} else {
+  if (strcmp($beneficiary, 'new') == 0) {
+    $query
+        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
+        ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
     //echo '<br />'.$query.'<br />';
+
     $result = pg_query($query);
-            if (!$result) {
-                $errormessage = pg_last_error();
-                echo "Error with query: " . $errormessage;
-                exit();
-            }
-}else if(strcmp($beneficiary,'new')==0){
-    $query = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
-             . "values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
-    //echo '<br />'.$query.'<br />';
-    
-    $result = pg_query($query); 
-    
-    if (!$result) { 
-        $errormessage = pg_last_error(); 
-        echo "Error with query: " . $errormessage; 
-        exit(); 
-    } 
+
+    if ( ! $result) {
+      $errormessage = pg_last_error();
+      echo "Error with query: ".$errormessage;
+      exit();
+    }
+  }
 }
 
 
 header("Location: social_vouchersales_search.php?nationalid=$nationalid");
-pg_close(); 
+pg_close();
 ?>
 
 <?php include "social_nextsale.php"; ?>
 
-        </body>
+</body>
 </html>
 

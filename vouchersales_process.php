@@ -1,156 +1,198 @@
 <?php
 include_once 'dbconnect.php';
 
-$nationalid=trim($_POST['nationalid']);
-$beneficiary=trim($_POST['beneficiary']);
-$voucher=trim($_POST['voucher']);
+$nationalid = trim($_POST['nationalid']);
+$beneficiary = trim($_POST['beneficiary']);
+$voucher = trim($_POST['voucher']);
 
 include_once 'generate_nationalid.php';
-                
 
-$dob=trim($_POST['dob']);
-if($dob==''){$dob='';}
 
-$lmp=trim($_POST['lmp']);
-if($lmp==''){$lmp='';}
+$dob = trim($_POST['dob']);
+if ($dob == '') {
+  $dob = '';
+}
 
-$edd=trim($_POST['edd']);
-if($edd==''){$edd='';}
+$lmp = trim($_POST['lmp']);
+if ($lmp == '') {
+  $lmp = '';
+}
 
-$surname=trim($_POST['surname']);
+$edd = trim($_POST['edd']);
+if ($edd == '') {
+  $edd = '';
+}
 
-$firstname=trim($_POST['firstname']);
+$surname = trim($_POST['surname']);
 
-$sex="F";
+$firstname = trim($_POST['firstname']);
 
-$guardian=trim($_POST['guardian']);
-if($guardian==''){$guardian='';}
+$sex = "F";
 
-$maritalstatus=trim($_POST['maritalstatus']);
-if($maritalstatus==''){$maritalstatus='';}
+$guardian = trim($_POST['guardian']);
+if ($guardian == '') {
+  $guardian = '';
+}
 
-$parity=trim($_POST['parity']);
-if($parity==''){$parity='';}
+$maritalstatus = trim($_POST['maritalstatus']);
+if ($maritalstatus == '') {
+  $maritalstatus = '';
+}
 
-$location=trim($_POST['location']);
-if($location==''){$location='';}
+$parity = trim($_POST['parity']);
+if ($parity == '') {
+  $parity = '';
+}
 
-$village=trim($_POST['village']);
-if($village==''){$village='';}
+$location = trim($_POST['location']);
+if ($location == '') {
+  $location = '';
+}
 
-$postaladdress=trim($_POST['postaladdress']);
-if($postaladdress==''){$postaladdress='';}
+$village = trim($_POST['village']);
+if ($village == '') {
+  $village = '';
+}
 
-$saledate=trim($_POST['saledate']);
-if($saledate==''){$saledate='';}
+$postaladdress = trim($_POST['postaladdress']);
+if ($postaladdress == '') {
+  $postaladdress = '';
+}
 
-$voucherserial=trim($_POST['voucherserial']);
-if($voucherserial==''){$voucherserial='';}
-    if(strcmp($voucher,'new')==0){
-        $strSQL="select coalesce(max(voucherserial),0) from vouchersales";
-        $result = pg_exec($conn, $strSQL);
-        $row = pg_fetch_row($result);
+$saledate = trim($_POST['saledate']);
+if ($saledate == '') {
+  $saledate = '';
+}
 
-        $uniquenumber = $row[0];
-        if($uniquenumber < 10000){
-            $uniquenumber = 10000;
-        }
-        if($uniquenumber >= 10000){
-            $uniquenumber = $uniquenumber+1;
-        }
-        $voucherserial = $uniquenumber;
-    }
+$voucherserial = trim($_POST['voucherserial']);
+if ($voucherserial == '') {
+  $voucherserial = '';
+}
+if (strcmp($voucher, 'new') == 0) {
+  $strSQL = "select coalesce(max(voucherserial),0) from vouchersales";
+  $result = pg_exec($conn, $strSQL);
+  $row = pg_fetch_row($result);
 
-$salerecord=trim($_POST['salerecord']);
-if($salerecord==''){$salerecord='';}
+  $uniquenumber = $row[0];
+  if ($uniquenumber < 10000) {
+    $uniquenumber = 10000;
+  }
+  if ($uniquenumber >= 10000) {
+    $uniquenumber = $uniquenumber + 1;
+  }
+  $voucherserial = $uniquenumber;
+}
 
-$distributor=trim($_POST['distributor']);
-if($distributor==''){$distributor='';}
+$salerecord = trim($_POST['salerecord']);
+if ($salerecord == '') {
+  $salerecord = '';
+}
 
-$serialno=trim($_POST['serialno']);
-if($serialno==''){$serialno='';}
+$distributor = trim($_POST['distributor']);
+if ($distributor == '') {
+  $distributor = '';
+}
 
-$phone=trim($_POST['phone']);
-if($phone==''){$phone='null';}
+$serialno = trim($_POST['serialno']);
+if ($serialno == '') {
+  $serialno = '';
+}
 
-$city=trim($_POST['city']);
-if($city==''){$city='';}
-             
+$phone = trim($_POST['phone']);
+if ($phone == '') {
+  $phone = 'null';
+}
+
+$city = trim($_POST['city']);
+if ($city == '') {
+  $city = '';
+}
+
 $username = $_SESSION['username'];
 $dateadded = date('d/m/Y');
 
-if(strcmp($beneficiary,'update')==0){
-    $query = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
-            . ", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd',reg_date='$saledate' where nationalid='$nationalid'";  
-    
+if (strcmp($beneficiary, 'update') == 0) {
+  $query
+      = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
+      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd',reg_date='$saledate' where nationalid='$nationalid'";
+
+  //echo '<br />'.$query.'<br />';
+  $result = pg_query($query);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query: ".$errormessage;
+    exit();
+  }
+} else {
+  if (strcmp($beneficiary, 'new') == 0) {
+    $query
+        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,reg_date,addedby) "
+        ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$saledate','$username')";
     //echo '<br />'.$query.'<br />';
+
     $result = pg_query($query);
-            if (!$result) {
-                $errormessage = pg_last_error();
-                echo "Error with query: " . $errormessage;
-                exit();
-            }
-}else if(strcmp($beneficiary,'new')==0){
-    $query = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,reg_date,addedby) "
-             . "values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$saledate','$username')";
-    //echo '<br />'.$query.'<br />';
-    
-    $result = pg_query($query); 
-    
-    if (!$result) { 
-        $errormessage = pg_last_error(); 
-        echo "Error with query: " . $errormessage; 
-        exit(); 
-    } 
+
+    if ( ! $result) {
+      $errormessage = pg_last_error();
+      echo "Error with query: ".$errormessage;
+      exit();
+    }
+  }
 }
 
-if(strcmp($voucher,'update')==0){
-    $query = "UPDATE vouchersales SET voucherserial=$voucherserial,saledate='$saledate',salerecord='$salerecord',distributorno=$distributor"
-            . " where nationalid='$nationalid'";  
-    //echo '<br />'.$query.'<br />';
-    $result = pg_query($query);
-            if (!$result) {
-                $errormessage = pg_last_error();
-                echo "Error with query: " . $errormessage;
-                exit();
-            }
-}else if(strcmp($voucher,'new')==0){
-    $strSQL="select coalesce(count(*),0) from vouchersales where voucherserial=$voucherserial";
+if (strcmp($voucher, 'update') == 0) {
+  $query
+      = "UPDATE vouchersales SET voucherserial=$voucherserial,saledate='$saledate',salerecord='$salerecord',distributorno=$distributor"
+      ." where nationalid='$nationalid'";
+  //echo '<br />'.$query.'<br />';
+  $result = pg_query($query);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query: ".$errormessage;
+    exit();
+  }
+} else {
+  if (strcmp($voucher, 'new') == 0) {
+    $strSQL
+        = "select coalesce(count(*),0) from vouchersales where voucherserial=$voucherserial";
     $result = pg_exec($conn, $strSQL);
     $row = pg_fetch_row($result);
 
     $voucherduplicate = $row[0];
-    
-    if($voucherduplicate>0){
-        echo "<h2>This voucher already exists in the database: $voucherserial</h2>";
+
+    if ($voucherduplicate > 0) {
+      echo "<h2>This voucher already exists in the database: $voucherserial</h2>";
+      exit();
+    } else {
+
+      $strSQL
+          = "select coalesce(count(*),0) from beneficiarymaster where nationalid='$nationalid'";
+      $result = pg_exec($conn, $strSQL);
+      $row = pg_fetch_row($result);
+
+      $beneficiarycheck = $row[0];
+
+      if ($beneficiarycheck == 0) {
+        echo "<h2>The National ID does not exists in Beneficiary List: $nationalid</h2>";
         exit();
-    }else{
-        
-        $strSQL="select coalesce(count(*),0) from beneficiarymaster where nationalid='$nationalid'";
-        $result = pg_exec($conn, $strSQL);
-        $row = pg_fetch_row($result);
-
-        $beneficiarycheck = $row[0];
-
-        if($beneficiarycheck==0){
-            echo "<h2>The National ID does not exists in Beneficiary List: $nationalid</h2>";
-            exit();
-        }else{
-        $query = "insert into vouchersales (voucherserial,nationalid,distributorno,saledate,salerecord,addedby,dateadded) "
-                 . "values($voucherserial,'$nationalid',$distributor,'$saledate','$salerecord','$username','$dateadded')";
+      } else {
+        $query
+            = "insert into vouchersales (voucherserial,nationalid,distributorno,saledate,salerecord,addedby,dateadded) "
+            ."values($voucherserial,'$nationalid',$distributor,'$saledate','$salerecord','$username','$dateadded')";
         //echo '<br />'.$query.'<br />';
-        $result = pg_query($query); 
-        if (!$result) { 
-            $errormessage = pg_last_error(); 
-            echo "Error with query: " . $errormessage; 
-            exit(); 
-        } 
-     }
-    
+        $result = pg_query($query);
+        if ( ! $result) {
+          $errormessage = pg_last_error();
+          echo "Error with query: ".$errormessage;
+          exit();
+        }
+      }
+
+    }
   }
 }
 
 echo "<h3><font color='green'>Records for <font color='red'>$firstname $surname, </font>ID Number: <font color='red'>$nationalid</font> updated Successfully! <br />Voucher Number: <font color='red'>$voucherserial</font></font></h3>";
-pg_close(); 
+pg_close();
 ?>
 

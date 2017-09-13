@@ -1,81 +1,109 @@
 <?php
 include_once 'dbconnect.php';
 
-$nationalid=trim($_POST['nationalid']);
-$beneficiary=trim($_POST['beneficiary']);
+$nationalid = trim($_POST['nationalid']);
+$beneficiary = trim($_POST['beneficiary']);
 
 $username = $_SESSION['username'];
 $dateadded = date('d/m/Y');
-                
-$dob=$_POST['dob'];
-if($dob==''){$dob='';}
 
-$lmp=$_POST['lmp'];
-if($lmp==''){$lmp='';}
+$dob = $_POST['dob'];
+if ($dob == '') {
+  $dob = '';
+}
 
-$edd=$_POST['edd'];
-if($edd==''){$edd='';}
+$lmp = $_POST['lmp'];
+if ($lmp == '') {
+  $lmp = '';
+}
 
-$surname=$_POST['surname'];
+$edd = $_POST['edd'];
+if ($edd == '') {
+  $edd = '';
+}
 
-$firstname=$_POST['firstname'];
+$surname = $_POST['surname'];
 
-$sex="F";
+$firstname = $_POST['firstname'];
 
-$guardian=$_POST['guardian'];
-if($guardian==''){$guardian='';}
+$sex = "F";
 
-$maritalstatus=$_POST['maritalstatus'];
-if($maritalstatus==''){$maritalstatus='';}
+$guardian = $_POST['guardian'];
+if ($guardian == '') {
+  $guardian = '';
+}
 
-$parity=$_POST['parity'];
-if($parity==''){$parity='';}
+$maritalstatus = $_POST['maritalstatus'];
+if ($maritalstatus == '') {
+  $maritalstatus = '';
+}
 
-$location=$_POST['location'];
-if($location==''){$location='';}
+$parity = $_POST['parity'];
+if ($parity == '') {
+  $parity = '';
+}
 
-$village=$_POST['village'];
-if($village==''){$village='';}
+$location = $_POST['location'];
+if ($location == '') {
+  $location = '';
+}
 
-$postaladdress=$_POST['postaladdress'];
-if($postaladdress==''){$postaladdress='';}
+$village = $_POST['village'];
+if ($village == '') {
+  $village = '';
+}
 
-$serialno=$_POST['serialno'];
-if($serialno==''){$serialno='';}
+$postaladdress = $_POST['postaladdress'];
+if ($postaladdress == '') {
+  $postaladdress = '';
+}
 
-$phone=$_POST['phone'];
-if($phone==''){$phone='null';}
+$serialno = $_POST['serialno'];
+if ($serialno == '') {
+  $serialno = '';
+}
 
-$city=$_POST['city'];
-if($city==''){$city='';}
-             
+$phone = $_POST['phone'];
+if ($phone == '') {
+  $phone = 'null';
+}
 
-if(strcmp($beneficiary,'update')==0){
-    $query = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
-            . ", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd' where nationalid='$nationalid'";  
-    
+$city = $_POST['city'];
+if ($city == '') {
+  $city = '';
+}
+
+
+if (strcmp($beneficiary, 'update') == 0) {
+  $query
+      = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
+      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd' where nationalid='$nationalid'";
+
+  //echo '<br />'.$query.'<br />';
+  $result = pg_query($query);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query: ".$errormessage;
+    exit();
+  }
+} else {
+  if (strcmp($beneficiary, 'new') == 0) {
+    $query
+        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
+        ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
     //echo '<br />'.$query.'<br />';
+
     $result = pg_query($query);
-            if (!$result) {
-                $errormessage = pg_last_error();
-                echo "Error with query: " . $errormessage;
-                exit();
-            }
-}else if(strcmp($beneficiary,'new')==0){
-    $query = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
-             . "values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
-    //echo '<br />'.$query.'<br />';
-    
-    $result = pg_query($query); 
-    
-    if (!$result) { 
-        $errormessage = pg_last_error(); 
-        echo "Error with query: " . $errormessage; 
-        exit(); 
-    } 
+
+    if ( ! $result) {
+      $errormessage = pg_last_error();
+      echo "Error with query: ".$errormessage;
+      exit();
+    }
+  }
 }
 
 echo "<h3><font color='green'>Records updated Successfully</font></h3>";
-pg_close(); 
+pg_close();
 ?>
 

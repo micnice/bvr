@@ -1,4 +1,8 @@
-﻿try { document.execCommand("BackgroundImageCache", false, true); } catch (e) { }
+﻿try {
+    document.execCommand("BackgroundImageCache", false, true);
+} catch (e) {
+}
+
 function getiev() {
     var userAgent = window.navigator.userAgent.toLowerCase();
     $.browser.msie8 = $.browser.msie && /msie 8\.0/i.test(userAgent);
@@ -14,10 +18,13 @@ function getiev() {
     else if ($.browser.msie6) {
         v = 6;
     }
-    else { v = -1; }
+    else {
+        v = -1;
+    }
     return v;
 }
-$(document).ready(function() {
+
+$(document).ready(function () {
     var v = getiev()
     if (v > 0) {
         $(document.body).addClass("ie ie" + v);
