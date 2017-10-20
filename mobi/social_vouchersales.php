@@ -27,8 +27,8 @@ if (isset($_POST['nationalid'])) {
 
 $sql = pg_query(
     $conn,
-    "SELECT nationalid,firstname,surname,dob,sex,lmp,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city"
-    ." FROM beneficiarymaster where upper(nationalid)='$nationalid'"
+    "SELECT b.nationalid, b.firstname, b.surname, b.dob, b.sex, p.lmp, p.edd, b.guardian, b.maritalstatus, p.parity, p.pregnancy, b.location, b.village, b.postaladdress, b.serialno, b.phone, b.city, p.idreg"
+    ." FROM beneficiarymaster b, pregnancyregistration p where p.idbeneficiarymaster=b.idbeneficiarymaster and upper(b.nationalid)='$nationalid'"
 );
 
 $count = 0;
@@ -46,12 +46,14 @@ while ($row = pg_fetch_row($sql)) {
   $guardian = $row[7];
   $maritalstatus = $row[8];
   $parity = $row[9];
-  $location = $row[10];
-  $village = $row[11];
-  $postaladdress = $row[12];
-  $serialno = $row[13];
-  $phone = $row[14];
-  $city = trim($row[15]);
+  $pregnancy = $row[10];
+  $location = $row[11];
+  $village = $row[12];
+  $postaladdress = $row[13];
+  $serialno = $row[14];
+  $phone = $row[15];
+  $city = trim($row[16]);
+  $idreg = $row[17];
   $beneficiarytitle = 'Update ';
   $beneficiary = 'update';
 }
@@ -66,6 +68,7 @@ if ($count == 0) {
   $guardian = '';
   $maritalstatus = '';
   $parity = '';
+  $pregnancy = '';
   $location = '';
   $village = '';
   $postaladdress = '';
@@ -75,6 +78,7 @@ if ($count == 0) {
   $facility = '';
   $saledate = '';
   $city = '';
+  $idreg = '';
   $beneficiarytitle = 'Enter New ';
   $vouchertitle = 'Enter New ';
   $beneficiary = 'new';
@@ -83,12 +87,12 @@ if ($count == 0) {
   $nationalid_blank = "XXXXXXXXXXXXXX";
   $sql = pg_query(
       $conn,
-      "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where nationalid='$nationalid_blank'"
+      "SELECT voucherserial,nationalid,distributorno,saledate,idreg FROM vouchersales where nationalid='$nationalid_blank'"
   );
 } else {
   $sql = pg_query(
       $conn,
-      "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where nationalid='$nationalid'"
+      "SELECT voucherserial,nationalid,distributorno,saledate, idreg FROM vouchersales where and idreg = '$idreg' and nationalid='$nationalid'"
   );
 }
 

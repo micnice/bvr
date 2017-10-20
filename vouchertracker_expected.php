@@ -46,7 +46,7 @@ $numrows = pg_numrows($result);
     <tr>
         <td colspan="19">
             <div align="left">
-                <form action="vouchertracker.php" method="POST">
+                <form action="vouchertracker_old.php" method="POST">
                     Search by Voucher Serial: <input type="text"
                                                      name="voucherserial"
                                                      size="15">

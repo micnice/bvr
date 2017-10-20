@@ -63,6 +63,11 @@ if ($parity == '') {
   $parity = '';
 }
 
+$pregnancy = trim($_POST['pregnancy']);
+if ($pregnancy == '') {
+  $pregnancy = 0;
+}
+
 $location = trim($_POST['location']);
 if ($location == '') {
   $location = '';
@@ -131,34 +136,77 @@ if ($city == '') {
 $username = $_SESSION['username'];
 $dateadded = date('d/m/Y');
 
+// CLOSE others
+$pregQuery
+    = "UPDATE pregnancyregistration SET closed=TRUE where idbeneficiarymaster = (select idbeneficiarymaster from beneficiarymaster where lower(trim(nationalid))=lower(trim('$nationalid')))";
+//echo '<br />'.$query.'<br />';
+$result = pg_query($pregQuery);
+if ( ! $result) {
+  $errormessage = pg_last_error();
+  echo "Error with query: ".$errormessage;
+  exit();
+}
+
+$saleQuery
+    = "UPDATE vouchersales SET closed=TRUE where lower(trim(nationalid))=lower(trim('$nationalid'))";
+//echo '<br />'.$query.'<br />';
+$result = pg_query($saleQuery);
+if ( ! $result) {
+  $errormessage = pg_last_error();
+  echo "Error with query: ".$errormessage;
+  exit();
+}
+
+
+
+
 if (strcmp($beneficiary, 'update') == 0) {
   $query
-      = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
-      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd',reg_date='$saledate' where nationalid='$nationalid'";
+      = "UPDATE BENEFICIARYMASTER SET dob='$dob', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
+      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname', reg_date='$saledate' where nationalid='$nationalid'";
 
   //echo '<br />'.$query.'<br />';
   $result = pg_query($query);
   if ( ! $result) {
     $errormessage = pg_last_error();
-    echo "Error with query: ".$errormessage;
+    echo "Error with query 2: ".$errormessage;
+    exit();
+  }
+
+  $pregnancyQuery = "insert into pregnancyregistration (lmp, reg_date, edd, pregnancy, parity, idbeneficiarymaster) values('$lmp', '$dateadded', '$edd', '$pregnancy', '$parity', (select idbeneficiarymaster from beneficiarymaster where nationalid='$nationalid'))";
+
+  $result =pg_query($pregnancyQuery);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query 3: ".$errormessage;
     exit();
   }
 } else {
   if (strcmp($beneficiary, 'new') == 0) {
     $query
-        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,reg_date,addedby) "
-        ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$saledate','$username')";
+        = "insert into beneficiarymaster (surname,firstname,nationalid,dob, sex, guardian,maritalstatus, location,village,postaladdress,serialno,phone,city,reg_date,addedby) "
+        ."values('$surname','$firstname','$nationalid','$dob','$sex','$guardian','$maritalstatus','$location','$village','$postaladdress','$serialno',$phone,'$city','$saledate','$username')";
     //echo '<br />'.$query.'<br />';
 
     $result = pg_query($query);
 
     if ( ! $result) {
       $errormessage = pg_last_error();
-      echo "Error with query: ".$errormessage;
+      echo "Error with query 4: ".$errormessage;
+      exit();
+    }
+
+    $pregnancyQuery = "insert into pregnancyregistration (lmp, reg_date, edd, pregnancy, parity, idbeneficiarymaster) values('$lmp', '$dateadded', '$edd', '$pregnancy', '$parity', (select idbeneficiarymaster from beneficiarymaster where nationalid='$nationalid'))";
+
+    $result =pg_query($pregnancyQuery);
+    if ( ! $result) {
+      $errormessage = pg_last_error();
+      echo "Error with query 5: ".$errormessage;
       exit();
     }
   }
 }
+
 
 if (strcmp($voucher, 'update') == 0) {
   $query
@@ -197,8 +245,8 @@ if (strcmp($voucher, 'update') == 0) {
         exit();
       } else {
         $query
-            = "insert into vouchersales (voucherserial,nationalid,distributorno,saledate,salerecord,addedby,dateadded) "
-            ."values($voucherserial,'$nationalid',$distributor,'$saledate','$salerecord','$username','$dateadded')";
+            = "insert into vouchersales (voucherserial,nationalid,distributorno,saledate,salerecord,addedby,dateadded,closed, idreg) "
+            ."values($voucherserial,'$nationalid',$distributor,'$saledate','$salerecord','$username','$dateadded','FALSE', (select idreg from pregnancyregistration where closed=FALSE and idbeneficiarymaster = (select idbeneficiarymaster from beneficiarymaster where nationalid='$nationalid')))";
         //echo '<br />'.$query.'<br />';
         $result = pg_query($query);
         if ( ! $result) {
@@ -211,7 +259,6 @@ if (strcmp($voucher, 'update') == 0) {
     }
   }
 }
-
 echo "<h3><font color='green'>Records for <font color='red'>$firstname $surname, </font>ID Number: <font color='red'>$nationalid</font> updated Successfully! <br />Voucher Number: <font color='red'>$voucherserial</font></font></h3>";
 pg_close();
 ?>

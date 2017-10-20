@@ -275,11 +275,6 @@ if (strlen($role) == 0) {
                       <li id="DisburseVouchers"><a
                                   href="main.php?page=vouchersalessummaryall_form">Voucher
                               Sales Summary (All)</a></li>
-
-                      <li id="Summary"><a href="vouchertracker_form_beta.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Voucher Tracker
-                              Beta</a></li>
                       <li id="Summary"><a href="vouchertracker_form.php"
                                           onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
                                           target="_blank">Voucher Tracker</a>

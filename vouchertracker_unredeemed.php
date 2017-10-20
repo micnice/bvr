@@ -26,7 +26,7 @@ if (isset($_POST['voucherserial'])) {
 
 if ($filteron == 0) {
   $strSQL
-      = "select b.saledate,b.voucherserial,c.facilityname,a.firstname,a.surname,a.nationalid,a.phone,a.location,a.village,a.lmp,a.edd from beneficiarymaster a,vouchersales b,facility c "
+      = "select a.reg_date,b.voucherserial,c.facilityname,a.firstname,a.surname,a.nationalid,a.phone,a.location,a.village,a.lmp,a.edd from beneficiarymaster a,vouchersales b,facility c "
       ." where a.nationalid = b.nationalid and b.distributorno = c.idfacility and substring(b.saledate,4,7) = '$period' and city='$district' and "
       ." b.voucherserial not in (select redeemserial from redeemedvouchers where vouchertype in (6,5,7,9,16))";
 } else {

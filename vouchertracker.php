@@ -26,17 +26,17 @@ if (isset($_POST['voucherserial'])) {
 
 if ($filteron == 0) {
   $strSQL
-      = "select b.saledate,b.voucherserial,c.facilityname,a.firstname,a.surname,a.nationalid,a.phone,a.location,a.village,a.lmp,a.edd from beneficiarymaster a,vouchersales b,facility c "
-      ." where a.nationalid = b.nationalid and b.distributorno = c.idfacility and substring(b.saledate,4,7) = '$period' and city='$district' and "
-      ." b.voucherserial in (select redeemserial from redeemedvouchers)";
+      = "select a.nationalid,a.firstname,a.surname,a.phone,a.location,a.village,a.lmp,a.edd, a.parity, a.dob, b.voucherserial, p.idreg from beneficiarymaster a, vouchersales b, pregnancyregistration p"
+      ." where a.nationalid = b.nationalid and substring(to_char(a.reg_date, 'dd/mm/yyyy'),4,7) = '$period' and city='$district' and a.nationalid in (select nationalid from redeemedvouchers)";
 } else {
   $strSQL
-      = "select b.saledate,b.voucherserial,c.facilityname,a.firstname,a.surname,a.nationalid,a.phone,a.location,a.village,a.lmp,a.edd from beneficiarymaster a,vouchersales b,facility c "
-      ." where a.nationalid = b.nationalid and b.distributorno = c.idfacility and substring(b.saledate,4,7) = '$period' and city='$district' and "
-      ." b.voucherserial in (select redeemserial from redeemedvouchers) and b.voucherserial=$voucherserial";
+      = "select a.nationalid,a.firstname,a.surname,a.phone,a.location,a.village,a.lmp,a.edd, a.parity, a.dob, b.voucherserial from beneficiarymaster a, vouchersales b"
+      ." where a.nationalid = b.nationalid and substring(to_char(a.reg_date, 'dd/mm/yyyy'),4,7) = '$period' and city='$district' and "
+      ." a.nationalid in (select nationalid from redeemedvouchers) and b.voucherserial=$voucherserial";
 }
 
-//echo $strSQL;
+// echo $strSQL;
+
 $result = pg_exec($conn, $strSQL);
 $numrows = pg_numrows($result);
 ?>
@@ -60,26 +60,79 @@ $numrows = pg_numrows($result);
         </td>
     </tr>
     <tr style="background-image: url(images/green_bg.png);">
-        <th>Voucher Date</th>
-        <th>Voucher Serial</th>
-        <th>Facility</th>
+        <th>Row #</th>
+        <th>National ID</th>
         <th>First name</th>
         <th>Surname</th>
-        <th>National ID</th>
+        <th>DOB</th>
         <th>Address</th>
         <th>Phone</th>
         <th>LMP</th>
-        <th>Booking Date</th>
         <th>EDD</th>
         <th>Booking GA</th>
         <th>GA Weeks</th>
-
-        <th>Voucher Type</th>
-        <th>Status</th>
-        <th>Redeem Facility</th>
-        <th>Date</th>
-        <th>Ref Number</th>
-        <th>Approval</th>
+        <th>Parity</th>
+        <th>Date Added</th>
+        <th>f112</th>
+        <th>f113</th>
+        <th>f114</th>
+        <th>f115</th>
+        <th>f116a</th>
+        <th>f116b</th>
+        <th>f117</th>
+        <th>f118</th>
+        <th>f119</th>
+        <th>f120</th>
+        <th>f121</th>
+        <th>Serial</th>
+        <th>ANC First Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>ANC Second Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>ANC Third Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>ANC Fourth Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Normal Delivery Clinic</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Complicated DeliveryClinic</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Complicated Delivery Hospital</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Ambulance Service</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Casearean Section</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>PNC 1st Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>PNC 2nd Visit</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>$10 Gift Token</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>$20 Gift Token</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Complications during pregnancy</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Complications during Post natal</th>
+        <th>Facility</th>
+        <th>Ref</th>
+        <th>Normal Delivery Hospital </th>
+        <th>Facility</th>
+        <th>Ref</th>
     </tr>
 
   <?php
@@ -87,15 +140,42 @@ $numrows = pg_numrows($result);
 
   for ($i = 0; $i < $numrows; $i++) {
     $row = pg_fetch_array($result, $i);
+    $type1date = ''; $type2date = ''; $type3date = ''; $type4date = ''; $type5date = ''; $type6date = ''; $type7date= ''; $type8date= ''; $type9date= ''; $type10date= ''; $type11date= ''; $type12date= ''; $type13date= ''; $type14date= ''; $type15date= ''; $type16date= '';
+    $type1facility= ''; $type2facility= ''; $type3facility= ''; $type4facility= ''; $type5facility= ''; $type6facility= ''; $type7facility= ''; $type8facility= ''; $type9facility= ''; $type10facility= ''; $type11facility= ''; $type12facility= ''; $type13facility= ''; $type14facility= ''; $type15facility= ''; $type16facility= '';
+    $type1ref= ''; $type2ref= ''; $type3ref= ''; $type4ref= ''; $type5ref= ''; $type6ref= ''; $type7ref= ''; $type8ref= ''; $type9ref= ''; $type10ref= ''; $type11ref= ''; $type12ref= ''; $type13ref= ''; $type14ref= ''; $type15ref= ''; $type16ref= '';
+    $f112='';$f113='';$f114='';$f115='';$f116a='';$f116b='';$f117='';$f118='';$f119='';$f120='';$f121='';$dateadded='';
+    $dob = '';
+    $nationalid = $row["nationalid"];
+    $row['idreg'];
 
-    $voucherserial = $row["voucherserial"];
     $redeemSQL
-        = "select b.usage, b.shortname,'Redeemed' as status,facilityname,redeemdate,ref from redeemedvouchers a, vouchertype b, facility c where a.distributorno = c.idfacility and b.usage = a.vouchertype and redeemserial='$voucherserial' "
-        ." order by usage asc";
+        = "select c.facilityname, a.redeemdate, a.vouchertype, a.ref from redeemedvouchers a, vouchersales v, facility c where a.distributorno = c.idfacility and a.nationalid = '$nationalid' and a.redeemserial=v.voucherserial and v.idreg='$idreg' order by a.vouchertype asc";
     $resultRedeem = pg_exec($conn, $redeemSQL);
     $numrowsRedeem = pg_numrows($resultRedeem);
-
     $lmp = substr(str_replace('/', '-', trim($row['lmp'])), 0, 10);
+    $lmpraw = $lmp;
+    $dob = substr(str_replace('/', '-', trim($row['dob'])), 0, 10);
+
+    $pointsSQL
+        = "select f112,f113,f114,f115,f116a,f116b,f117,f118,f119,f120,f121,dateadded from assessment "
+        ." where nationalid = '$nationalid'";
+
+    $resultPoints = pg_exec($conn, $pointsSQL);
+    $numrowsPoints = pg_numrows($resultPoints);
+    $rowPoints = pg_fetch_array($resultPoints, 0);
+    $dateadded = substr(str_replace('/', '-', trim($rowPoints['dateadded'])), 0, 10);
+
+    $f112 = $rowPoints['f112'];
+    $f113 = $rowPoints['f113'];
+    $f114 = $rowPoints['f114'];
+    $f115 = $rowPoints['f115'];
+    $f116a = $rowPoints['f116a'];
+    $f116b = $rowPoints['f116b'];
+    $f117 = $rowPoints['f117'];
+    $f118 = $rowPoints['f118'];
+    $f119 = $rowPoints['f119'];
+    $f120 = $rowPoints['f120'];
+    $f121 = $rowPoints['f121'];
 
     $lmptemp = explode('-', $lmp);
     if (intval($lmptemp[1]) > 12 && $lmptemp[0] <= 12) {
@@ -105,12 +185,82 @@ $numrows = pg_numrows($result);
     }
 
     $lmpdate = date('Y-m-d', strtotime($lmp));
+
     $edd = substr(str_replace('/', '-', trim($row['edd'])), 0, 10);
     $edddate = date('Y-m-d', strtotime($edd));
 
-
     for ($x = 0; $x < $numrowsRedeem; $x++) {
       $rowRedeem = pg_fetch_array($resultRedeem, $x);
+
+      $type = $rowRedeem['vouchertype'];
+      if ($type == 1) {
+          $type1date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type1facility = $rowRedeem["facilityname"];
+          $type1ref = $rowRedeem["ref"];
+      } else if ($type == 2) {
+          $type2date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type2facility = $rowRedeem["facilityname"];
+          $type2ref = $rowRedeem["ref"];
+      } else if ($type == 3) {
+          $type3date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type3facility = $rowRedeem["facilityname"];
+          $type3ref = $rowRedeem["ref"];
+      } else if ($type == 4) {
+          $type4date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type4facility = $rowRedeem["facilityname"];
+          $type4ref = $rowRedeem["ref"];
+      } else if ($type == 5) {
+          $type5date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type5facility = $rowRedeem["facilityname"];
+          $type5ref = $rowRedeem["ref"];
+      } else if ($type == 6) {
+          $type6date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type6facility = $rowRedeem["facilityname"];
+          $type6ref = $rowRedeem["ref"];
+      } else if ($type == 7) {
+          $type7date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type7facility = $rowRedeem["facilityname"];
+          $type7ref = $rowRedeem["ref"];
+      } else if ($type == 8) {
+          $type8date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type8facility = $rowRedeem["facilityname"];
+          $type8ref = $rowRedeem["ref"];
+      } else if ($type == 9) {
+          $type9date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type9facility = $rowRedeem["facilityname"];
+          $type9ref = $rowRedeem["ref"];
+      } else if ($type == 10) {
+          $type10date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type10facility = $rowRedeem["facilityname"];
+          $type10ref = $rowRedeem["ref"];
+      } else if ($type == 11) {
+          $type11date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type11facility = $rowRedeem["facilityname"];
+          $type11ref = $rowRedeem["ref"];
+      } else if ($type == 12) {
+          $type12date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type12facility = $rowRedeem["facilityname"];
+          $type12ref = $rowRedeem["ref"];
+      } else if ($type == 13) {
+          $type13date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type13facility = $rowRedeem["facilityname"];
+          $type13ref = $rowRedeem["ref"];
+      } else if ($type == 14) {
+          $type14date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type14facility = $rowRedeem["facilityname"];
+          $type14ref = $rowRedeem["ref"];
+      } else if ($type == 15) {
+          $type15date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type15facility = $rowRedeem["facilityname"];
+          $type15ref = $rowRedeem["ref"];
+      } else if ($type == 16) {
+          $type16date = str_replace('/', '-', trim($rowRedeem["redeemdate"]));
+          $type16facility = $rowRedeem["facilityname"];
+          $type16ref = $rowRedeem["ref"];
+      } else {
+         //DO NOTHING
+      }
+
       if ($x % 2 == 0) {
         $color = '#eeeeee';
       } else {
@@ -168,62 +318,95 @@ $numrows = pg_numrows($result);
           $weeks = '';
           $newEdd = '';
         }
-
       }
       ?>
-        <tr style="vertical-align:top">
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["saledate"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["voucherserial"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["facilityname"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["firstname"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["surname"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["nationalid"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $row["location"]
-                  .', '.$row["village"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>">
-                <nobr><?php echo $row["phone"]; ?> </nobr>
-            </td>
-            <td style="background-color: <?php echo $color; ?>">
-                <nobr><?php echo $lmp; ?> </nobr>
-            </td>
-
-            <td style="background-color: <?php echo $color; ?>">
-                <nobr><?php echo $redeemdate; ?></nobr>
-            </td>
-            <td style="background-color: <?php echo $color; ?>">
-                <nobr><?php echo $newEdd; ?> </nobr>
-            </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $days ?></td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $weeks; ?></td>
-
-          <?php
-
-          $voucherserial = $row["voucherserial"];
-          $approvalSQL
-              = "select approval from voucherclaims where voucherserial='$voucherserial'";
-          $resultApproval = pg_exec($conn, $approvalSQL);
-          $numrowsApproval = pg_numrows($resultApproval);
-          if ($numrowsApproval == 0) {
-            $redeemed = 'Redeemed';
-            $approval = 'Not Claimed';
-          } else {
-            $redeemed = 'Claimed';
-            $approval = pg_fetch_result($resultApproval, 0, 0);
-          }
-          ?>
-
-            <td style="background-color: <?php echo $color; ?>"><?php echo $rowRedeem["shortname"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $redeemed; ?> </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $rowRedeem["facilityname"]; ?> </td>
-            <td style="background-color: <?php echo $color; ?>">
-                <nobr><?php echo $rowRedeem["redeemdate"]; ?> </nobr>
-            </td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $ref; ?></td>
-            <td style="background-color: <?php echo $color; ?>"><?php echo $approval; ?> </td>
-
-        </tr>
       <?php
-    }
+    } ?>
+
+  <tr style="vertical-align:top">
+    <td style="background-color: <?php echo $color; ?>"><?php echo $i+1 ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["nationalid"]; ?> </td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["firstname"]; ?> </td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["surname"]; ?> </td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $dob; ?> </td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["location"]
+          .', '.$row["village"]; ?> </td>
+    <td style="background-color: <?php echo $color; ?>">
+        <nobr><?php echo $row["phone"]; ?> </nobr>
+    </td>
+    <td style="background-color: <?php echo $color; ?>">
+        <nobr><?php echo $lmpraw; ?> </nobr>
+    </td>
+
+    <td style="background-color: <?php echo $color; ?>">
+        <nobr><?php echo $newEdd; ?> </nobr>
+    </td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $days ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $weeks; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["parity"]; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $dateadded; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f112; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f113; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f114; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f115; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f116a; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f116b; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f117; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f118; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f119; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f120; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $f121; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $row["voucherserial"]; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type1date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type1facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type1ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type2date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type2facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type2ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type3date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type3facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type3ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type4date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type4facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type4ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type5date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type5facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type5ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type6date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type6facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type6ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type7date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type7facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type7ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type8date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type8facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type8ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type9date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type9facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type9ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type10date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type10facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type10ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type11date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type11facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type11ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type12date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type12facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type12ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type13date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type13facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type13ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type14date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type14facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type14ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type15date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type15facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type15ref; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type16date; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type16facility; ?></td>
+    <td style="background-color: <?php echo $color; ?>"><?php echo $type16ref; ?></td>
+    </tr>
+    <?php
   }
   pg_close($conn);
   ?>

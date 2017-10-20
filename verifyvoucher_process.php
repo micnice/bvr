@@ -137,28 +137,28 @@ if (strcmp($_SESSION['login'], 'false') == 0) {
 
           if (strcmp($userrole, 'hospital') == 0) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (7,9,14,15,16) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (7,9,14,15,16) order by usage asc";
           } elseif (strcmp($userrole, 'clinic') == 0) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (1,2,3,4,5,6,10,11) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (1,2,3,4,5,6,10,11) order by usage asc";
           } elseif (strcmp($userrole, 'matron') == 0 && $voucherDelivery == 7) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (12) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (12) order by usage asc";
           } elseif (strcmp($userrole, 'matron') == 0 && $voucherDelivery == 9) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (13) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (13) order by usage asc";
           } elseif (strcmp($userrole, 'sic') == 0
               && ($voucherDelivery == 5
                   || $voucherDelivery == 6)
           ) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (12) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (12) order by usage asc";
           } elseif (strcmp($userrole, 'ambulance') == 0) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') and usage in (8) order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) and usage in (8) order by usage asc";
           } elseif (strcmp($userrole, 'admin') == 0) {
             $sqlStr1
-                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid') order by usage asc";
+                = "SELECT * From vouchertype where usage not in (SELECT vouchertype from REDEEMEDVOUCHERS where nationalid='$nationalid' and redeemserial not in (select voucherserial from vouchersales where closed=TRUE)) order by usage asc";
           }
           //echo $sqlStr1.';';
           $sql = pg_query($conn, $sqlStr1);
