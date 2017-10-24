@@ -29,15 +29,18 @@ ALTER TABLE vouchersales ADD COLUMN idreg INTEGER REFERENCES pregnancyregistrati
 ###### Populate idreg VS   ######
 #################################
 
-update vouchersales set idreg = (select p.idreg from pregnancyregistration p, beneficiarymaster b where p.idbeneficiarymaster=b.idbeneficiarymaster LIMIT 1) FROM beneficiarymaster where vouchersales.nationalid = beneficiarymaster.nationalid; 
+update vouchersales set idreg = pregnancyregistration.idreg from pregnancyregistration  where pregnancyregistration.voucherserial=vouchersales.voucherserial;
 
 ### Error
 
 ERROR:  more than one row returned by a subquery used as an expression
 bvr=# update vouchersales set idreg = (select p.idreg from pregnancyregistration p, beneficiarymaster b where p.idbeneficiarymaster=b.idbeneficiarymaster) FROM beneficiarymaster where vouchersales.nationalid = beneficiarymaster.nationalid;  
 
-##### Duplicates
-select * from pregnancyregistration ou
-where (select count(*) from pregnancyregistration inr
-where inr.idreg = ou.idreg) > 1
+##### Add closed to pregnancyregistration
+ALTER TABLE pregnancyregistration ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
 
+##### Add closed to vouchersales
+ ALTER TABLE vouchersales ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
+
+## Error
+Existing beneficiary not found on mobi/social_vouchersales_search.php

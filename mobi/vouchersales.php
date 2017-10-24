@@ -112,7 +112,7 @@ if ($count == 0 || $pregnancy == 2) {
   $voucher = 'new';
   $vouchertitle = 'Enter New ';
   if ($pregnancy == 2) {
-    $vouchertitle = '(<font color=red>Second Pregnancy</font>) Enter New ';
+    $vouchertitle = '(<font color=red>Next Pregnancy</font>) Enter New ';
   }
 }
 ?>

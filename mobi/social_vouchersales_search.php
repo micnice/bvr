@@ -34,10 +34,10 @@ if (isset($_POST['nationalid'])) {
 // }
 if (strlen($nationalid) == 0) {
   $strSQL
-      = "SELECT * From beneficiarymaster where lower(trim(nationalid)) not in (select lower(trim(nationalid)) from vouchersales) and ((lower(firstname) like '%$firstname%' and lower(surname) like '%$surname%') or (lower(firstname) like '%$surname%' and lower(surname) like '%$firstname%')) limit 100";
+      = "SELECT * From beneficiarymaster where lower(trim(nationalid)) and ((lower(firstname) like '%$firstname%' and lower(surname) like '%$surname%') or (lower(firstname) like '%$surname%' and lower(surname) like '%$firstname%')) limit 100";
 } else {
   $strSQL
-      = "SELECT * From beneficiarymaster where lower(trim(nationalid)) not in (select lower(trim(nationalid)) from vouchersales) and lower(trim(nationalid)) like '%$nationalid%' limit 100";
+      = "SELECT * From beneficiarymaster where lower(trim(nationalid)) and lower(trim(nationalid)) like '%$nationalid%' limit 100";
 }
 
 $result = pg_exec($conn, $strSQL);
