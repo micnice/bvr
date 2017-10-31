@@ -100,8 +100,8 @@ $dateadded = date("d/m/Y");
 
 if (strcmp($beneficiary, 'update') == 0) {
   $query
-      = "UPDATE BENEFICIARYMASTER SET dob='$dob', guardian='$guardian',maritalstatus='$maritalstatus',location='$location',village='$village',postaladdress='$postaladdress'"
-      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname' where nationalid='$nationalid'";
+      = "UPDATE BENEFICIARYMASTER SET dob='$dob', lmp='$lmp', guardian='$guardian',maritalstatus='$maritalstatus',parity='$parity',location='$location',village='$village',postaladdress='$postaladdress'"
+      .", serialno='$serialno', phone=$phone,city='$city', surname='$surname', firstname='$firstname',edd='$edd' where nationalid='$nationalid'";
 
   //echo '<br />'.$query.'<br />';
   $result = pg_query($query);
@@ -121,8 +121,8 @@ if (strcmp($beneficiary, 'update') == 0) {
 } else {
   if (strcmp($beneficiary, 'new') == 0) {
     $beneficiaryQuery
-        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,sex,guardian,maritalstatus,location,village,postaladdress,serialno,phone,city,addedby) "
-        ."values('$surname','$firstname','$nationalid','$dob','$sex','$guardian','$maritalstatus','$location','$village','$postaladdress','$serialno',$phone,'$city','$username')";
+        = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
+        ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
     //echo '<br />'.$query.'<br />';
 
     $result = pg_query($beneficiaryQuery);
