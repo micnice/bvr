@@ -3,28 +3,28 @@
 session_start();
 include 'dbconnect.php';
 if (strcmp($_SESSION['login'], 'false') == 0) {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  $query
-      = "SELECT * FROM users WHERE username = '$username' AND password = md5('$password') and userrole in ('admin','NPA');";
-  $result = pg_query($conn, $query);
-  $row = pg_fetch_array($result, 0);
-  //echo $query;
-  if (pg_num_rows($result) != 1) {
-    header("Location: index.php?login=fail");
-    die();
-  } else {
-    $_SESSION['login'] = 'true';
-    $_SESSION['role'] = $row[6];
-    $_SESSION["userrole"] = $row[6];
-    $_SESSION["username"] = $row[0];
-    $_SESSION["facility"] = $row[11];
-  }
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $query
+        = "SELECT * FROM users WHERE username = '$username' AND password = md5('$password') and userrole in ('admin','NPA', 'verifier');";
+    $result = pg_query($conn, $query);
+    $row = pg_fetch_array($result, 0);
+    //echo $query;
+    if (pg_num_rows($result) != 1) {
+        header("Location: index.php?login=fail");
+        die();
+    } else {
+        $_SESSION['login'] = 'true';
+        $_SESSION['role'] = $row[6];
+        $_SESSION["userrole"] = $row[6];
+        $_SESSION["username"] = $row[0];
+        $_SESSION["facility"] = $row[11];
+    }
 
-  if (strcmp($_SESSION['login'], 'true') != 0 || ! isset($_SESSION['login'])) {
-    header("Location: index.php?login=fail");
-    die();
-  }
+    if (strcmp($_SESSION['login'], 'true') != 0 || !isset($_SESSION['login'])) {
+        header("Location: index.php?login=fail");
+        die();
+    }
 }
 ?>
 
@@ -130,7 +130,7 @@ if (strcmp($_SESSION['login'], 'false') == 0) {
 $role = trim($_SESSION['role']);
 
 if (strlen($role) == 0) {
-  die("Session Expired! Please login again! <a href='index.php'>Login Again</a>");
+    die("Session Expired! Please login again! <a href='index.php'>Login Again</a>");
 }
 ?>
 <div id="header"
@@ -155,258 +155,316 @@ if (strlen($role) == 0) {
      style="border: 2px solid; border-radius: 25px; border-color: #537313;">
     <div id="sidebar">
         <div class="applemenu">
-          <?php
-          $acl = array("NPA", "admin");
-          if (in_array($role, $acl)) {
-            ?>
-              <div class="silverheader" id="MainRegister"><a class="active"
-                                                             href="#one">Beneficiary
-                      Register</a></div>
-              <div class="submenu">
-                  <ul>
-                      <li id="listhh"><a href="main.php?page=beneficiaryupload">Upload
-                              Beneficiaries</a></li>
-                      <hr/>
-                      <li id="listb"><a href="main.php?page=beneficiarylist">List
-                              Beneficiary</a></li>
-                  </ul>
-              </div>
             <?php
-          }
-          $acl = array("NPA", "admin");
-          if (in_array($role, $acl)) {
-            ?>
-              <div class="silverheader" id="Claims"><a class="" href="#three">Invoicing
-                      &AMP; Claims Processing</a></div>
-              <div class="submenu">
-                  <ul>
-                      <li id="AddClaim"><a href="mobi/verifyvoucher.php"
-                                           onclick="return !window.open(this.href, 'Google', 'width=500,height=500')"
-                                           target="_blank">Redeem Vouchers</a>
-                      </li>
-                      <li id="Summary"><a href="trackvouchers_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Track Vouchers</a>
-                      </li>
+            $acl = array("NPA", "admin");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="MainRegister"><a class="active" href="#one">Beneficiary
+                        Register</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="listhh"><a href="main.php?page=beneficiaryupload">Upload
+                                Beneficiaries</a></li>
+                        <hr/>
+                        <li id="listb"><a href="main.php?page=beneficiarylist">List
+                                Beneficiary</a></li>
+                    </ul>
+                </div>
 
-                      <li id="Summary"><a href="claimadd_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">View Redeemed
-                              Vouchers</a></li>
-                      <li id="Summary"><a href="revokevoucher_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Vouchers Redeemed by
-                              ID</a></li>
-                      <li id="ApproveClaims"><a
-                                  href="main.php?page=claimsapprove_form">Approve
-                              Claims</a></li>
-                      <li id="PrintInvoice"><a
-                                  href="main.php?page=invoice_form">Print Health
-                              Facility Invoice</a></li>
-                      <li id="PrintInvoice"><a
-                                  href="main.php?page=cboinvoice_form">Print CBO
-                              Invoice</a></li>
-                  </ul>
-              </div>
-            <?php
-          }
-          $acl = array("CBO", "NPA", "admin");
-          if (in_array($role, $acl)) {
 
-            ?>
+                <?php
+            }
 
-              <div class="silverheader" id="QualityChecklist"><a class=""
-                                                                 href="#three">Quality
-                      Component</a></div>
-              <div class="submenu">
-                  <ul>
-                      <li id="QualityChecklist"><a
-                                  href="main.php?page=qualitychecklist_form">Quality
-                              Checklist</a></li>
-                      <li id="CBOScore"><a href="mobi/cboscore_form.php"
-                                           onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                           target="_blank">CBO Score</a></li>
-                      <li id="CBOScore"><a href="viewcboquestionnaires_form.php"
-                                           onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                           target="_blank">Audit CBO Scores</a>
-                      </li>
-                      <li id="CBOScore"><a href="cboscore_summary_form.php"
-                                           onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                           target="_blank">CBO Score Summary</a>
-                      </li>
+            $acl = array("NPA", "admin",);
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="Claims"><a class="" href="#three">Invoicing
+                        &AMP; Claims Processing</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="AddClaim"><a href="mobi/verifyvoucher.php"
+                                             onclick="return !window.open(this.href, 'Google', 'width=500,height=500')"
+                                             target="_blank">Redeem Vouchers</a>
+                        </li>
+                        <li id="Summary"><a href="trackvouchers_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Track Vouchers</a>
+                        </li>
 
-                      <li id="CBOScore"><a
-                                  href="main.php?page=quality_summary_form">Quality
-                              Score Summary</a></li>
-                      <hr/>
-                      <li id="Summary"><a href="mobi/cbosamples_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">CBO samples</a></li>
+                        <li id="Summary"><a href="claimadd_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">View Redeemed
+                                Vouchers</a></li>
+                        <li id="Summary"><a href="revokevoucher_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Redeemed by
+                                ID</a></li>
+                        <li id="ApproveClaims"><a
+                                    href="main.php?page=claimsapprove_form">Approve
+                                Claims</a></li>
+                        <li id="PrintInvoice"><a
+                                    href="main.php?page=invoice_form">Print Health
+                                Facility Invoice</a></li>
+                        <li id="PrintInvoice"><a
+                                    href="main.php?page=cboinvoice_form">Print CBO
+                                Invoice</a></li>
+                    </ul>
+                </div>
+                <?php
+            }
+            $acl = array("CBO", "NPA", "admin");
+            if (in_array($role, $acl)) {
 
-                    <?php
-                    $acl = array("admin");
-                    if (in_array($role, $acl)) {
+                ?>
 
-                      ?>
-                        <li id="CBOScore"><a
-                                    href="main.php?page=cboscore_edit_form">Delete
-                                Questionnaire</a></li>
-                      <?php
-                    }
-                    ?>
-                  </ul>
-              </div>
-            <?php
-          }
-          $acl = array("NPA", "admin");
-          if (in_array($role, $acl)) {
-            ?>
-              <div class="silverheader" id="ManageVoucher"><a class=""
-                                                              href="#three">Voucher
-                      Management</a></div>
-              <div class="submenu">
-                  <ul>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=vouchersales_form">Voucher
-                              Sales</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=vouchersalessummary_form">Voucher
-                              Sales Summary</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=vouchersalessummaryall_form">Voucher
-                              Sales Summary (All)</a></li>
-
-                      <li id="Summary"><a href="vouchertracker_form_beta.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Voucher Tracker
-                              Beta</a></li>
-                      <li id="Summary"><a href="vouchertracker_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Voucher Tracker</a>
-                      </li>
-                      <li id="Summary"><a
-                                  href="vouchertracker_unredeemed_form.php"
-                                  onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                  target="_blank">Voucher Tracker -
-                              Unredeemed</a></li>
-                      <li id="Summary"><a href="deliverytracker_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Delivery Tracker</a>
-                      </li>
-
-                  </ul>
-              </div>
-            <?php
-          }
-          $acl = array("admin");
-          if (in_array($role, $acl)) {
-            ?>
-              <div class="silverheader" id="SystemSetup"><a class=""
-                                                            href="#three">Reports</a>
-              </div>
-              <div class="submenu">
-                  <ul>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=beneficiarycount_summary">Beneficiary
-                              Count</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="vouchersales_unredeemed_form.php"
-                                  onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                  target="_blank">Unredeemed Vouchers</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=partially_redeemed_form">Partially
-                              Redeemed Vouchers</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="main.php?page=enrollmentsummary_form">Enrollment
-                              Summary</a></li>
-                      <li id="Summary"><a href="voucherredeemedsummary_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Vouchers Redeemed</a>
-                      </li>
-                      <li id="Summary"><a href="voucherapprovedsummary_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Vouchers Approved</a>
-                      </li>
-                      <li id="Summary"><a
-                                  href="vouchers_waiting_approvalsummary.php"
-                                  onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                  target="_blank">Vouchers Awaiting Approval</a>
-                      </li>
-                      <li id="Summary"><a href="voucherrejectedsummary.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Vouchers Rejected</a>
-                      </li>
-                      <li id="ListClaims"><a href="claimsapproved_form.php"
+                <div class="silverheader" id="QualityChecklist"><a class=""
+                                                                   href="#three">Quality Component</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="QualityChecklist"><a
+                                    href="main.php?page=qualitychecklist_form">Quality
+                                Checklist</a></li>
+                        <li id="CBOScore"><a href="mobi/cboscore_form.php"
                                              onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                             target="_blank">Approved Claims</a>
-                      </li>
-                      <li id="RejectedClaims"><a
-                                  href="main.php?page=claimsrejected_form">Rejected
-                              Claims</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="beneficiaries_nosales_form.php"
-                                  onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                  target="_blank">Beneficiaries with no
-                              sales</a></li>
-                      <li id="DisburseVouchers"><a
-                                  href="assessment_scores_form.php"
-                                  onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                  target="_blank">Assessment Scores</a></li>
-                      <li id="Summary"><a href="deliveriessummary_form.php"
-                                          onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
-                                          target="_blank">Deliveries Summary</a>
-                      </li>
+                                             target="_blank">CBO Score</a></li>
+                        <li id="CBOScore"><a href="viewcboquestionnaires_form.php"
+                                             onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                             target="_blank">Audit CBO Scores</a>
+                        </li>
+                        <li id="CBOScore"><a href="cboscore_summary_form.php"
+                                             onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                             target="_blank">CBO Score Summary</a>
+                        </li>
 
-                  </ul>
-              </div>
-            <?php
-          }
-          $acl = array("admin");
-          if (in_array($role, $acl)) {
+                        <li id="CBOScore"><a
+                                    href="main.php?page=quality_summary_form">Quality
+                                Score Summary</a></li>
+                        <li id="Summary"><a href="mobi/cbosamples_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">CBO samples</a></li>
+
+                    </ul>
+                </div>
+                <?php
+            }
+            $acl = array("verifier");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="MainRegister"><a class="active" href="#one">Beneficiary
+                        Register</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="listb"><a href="main.php?page=beneficiarylist">List
+                                Beneficiary</a></li>
+                    </ul>
+                </div>
+                <?php
+            }
+
+            $acl = array("verifier");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="Claims"><a class="" href="#three">Invoicing
+                        &AMP; Claims Processing</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="Summary"><a href="trackvouchers_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Track Vouchers</a>
+                        </li>
+                        <li id="Summary"><a href="revokevoucher_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Redeemed by
+                                ID</a></li>
+                    </ul>
+                </div>
+                <?php
+            }
+            $acl = array("verifier");
+            if (in_array($role, $acl)) {
+
+                ?>
+                <div class="silverheader" id="SystemSetup"><a class=""
+                                                              href="#three">Reports</a>
+                </div>
+                <div class="submenu">
+                    <ul>
+
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=partially_redeemed_form">Partially
+                                Redeemed Vouchers</a></li>
+                        </li>
+                        <li id="ListClaims"><a href="claimsapproved_form.php"
+                                               onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                               target="_blank">Approved Claims</a>
+                    </ul>
+                </div>
+                <?php
+            }
+
+            $acl = array("admin");
+            if (in_array($role, $acl)) {
+
+                ?>
+                <li id="CBOScore"><a
+                            href="main.php?page=cboscore_edit_form">Delete
+                        Questionnaire</a></li>
+                <?php
+            }
+
+            $acl = array("NPA", "admin");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="ManageVoucher"><a class=""
+                                                                href="#three">Voucher
+                        Management</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=vouchersales_form">Voucher
+                                Sales</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=vouchersalessummary_form">Voucher
+                                Sales Summary</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=vouchersalessummaryall_form">Voucher
+                                Sales Summary (All)</a></li>
+
+                        <li id="Summary"><a href="vouchertracker_form_beta.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Voucher Tracker
+                                Beta</a></li>
+                        <li id="Summary"><a href="vouchertracker_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Voucher Tracker</a>
+                        </li>
+                        <li id="Summary"><a
+                                    href="vouchertracker_unredeemed_form.php"
+                                    onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                    target="_blank">Voucher Tracker -
+                                Unredeemed</a></li>
+                        <li id="Summary"><a href="deliverytracker_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Delivery Tracker</a>
+                        </li>
+
+                    </ul>
+                </div>
+                <?php
+            }
+            $acl = array("admin");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="SystemSetup"><a class=""
+                                                              href="#three">Reports</a>
+                </div>
+                <div class="submenu">
+                    <ul>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=beneficiarycount_summary">Beneficiary
+                                Count</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="vouchersales_unredeemed_form.php"
+                                    onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                    target="_blank">Unredeemed Vouchers</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=partially_redeemed_form">Partially
+                                Redeemed Vouchers</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=enrollmentsummary_form">Enrollment
+                                Summary</a></li>
+                        <li id="Summary"><a href="voucherredeemedsummary_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Redeemed</a>
+                        </li>
+                        <li id="Summary"><a href="voucherapprovedsummary_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Approved</a>
+                        </li>
+                        <li id="Summary"><a
+                                    href="vouchers_waiting_approvalsummary.php"
+                                    onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                    target="_blank">Vouchers Awaiting Approval</a>
+                        </li>
+                        <li id="Summary"><a href="voucherrejectedsummary.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Rejected</a>
+                        </li>
+                        <li id="ListClaims"><a href="claimsapproved_form.php"
+                                               onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                               target="_blank">Approved Claims</a>
+                        </li>
+                        <li id="RejectedClaims"><a
+                                    href="main.php?page=claimsrejected_form">Rejected
+                                Claims</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="beneficiaries_nosales_form.php"
+                                    onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                    target="_blank">Beneficiaries with no
+                                sales</a></li>
+                        <li id="DisburseVouchers"><a
+                                    href="assessment_scores_form.php"
+                                    onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                    target="_blank">Assessment Scores</a></li>
+                        <li id="Summary"><a href="deliveriessummary_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Deliveries Summary</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <?php
+            }
+            $acl = array("admin");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="SystemSetup"><a class=""
+                                                              href="#three">System
+                        Setup</a></div>
+                <div class="submenu">
+                    <ul>
+
+                        <li id="AddUser"><a href="main.php?page=adduser">Add New
+                                User</a></li>
+                        <li id="AddUser"><a href="main.php?page=adduserlist">List
+                                Existing Users</a></li>
+
+                    </ul>
+                </div>
+
+                <?php
+            }
+            $acl = array("admin");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="ProfileSettings"><a class=""
+                                                                  href="#three">Profile
+                        Settings</a></div>
+                <div class="submenu">
+                    <ul>
+
+                        <li>Change Password</li>
+                        <li><a href="index.php">Log Out</a></li>
+
+                    </ul>
+                </div>
+                <?php
+            }
             ?>
-              <div class="silverheader" id="SystemSetup"><a class=""
-                                                            href="#three">System
-                      Setup</a></div>
-              <div class="submenu">
-                  <ul>
 
-                      <li id="AddUser"><a href="main.php?page=adduser">Add New
-                              User</a></li>
-                      <li id="AddUser"><a href="main.php?page=adduserlist">List
-                              Existing Users</a></li>
-
-                  </ul>
-              </div>
-            <?php
-          }
-          $acl = array("admin");
-          if (in_array($role, $acl)) {
-            ?>
-              <div class="silverheader" id="ProfileSettings"><a class=""
-                                                                href="#three">Profile
-                      Settings</a></div>
-              <div class="submenu">
-                  <ul>
-
-                      <li>Change Password</li>
-                      <li><a href="index.php">Log Out</a></li>
-
-                  </ul>
-              </div>
-            <?php
-          }
-          ?>
         </div>
     </div>
+
     <div id="content">
-      <?php
-      if (isset($_GET['page']) || ! empty($_GET['page'])) {
-        $page = $_GET['page'];
-      } else {
-        $page = 'welcome';
-      }
-      include $page.'.php';
-      ?>
+        <?php
+        if (isset($_GET['page']) || !empty($_GET['page'])) {
+            $page = $_GET['page'];
+        } else {
+            $page = 'welcome';
+        }
+        include $page . '.php';
+        ?>
     </div>
 </div>
 </body>
