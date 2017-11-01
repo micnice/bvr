@@ -52,6 +52,7 @@ while ($row = pg_fetch_row($sql)) {
   $serialno = $row[13];
   $phone = $row[14];
   $city = trim($row[15]);
+  $idreg = $row[15];
   $beneficiarytitle = 'Update ';
   $beneficiary = 'update';
 }
@@ -66,6 +67,7 @@ if ($count == 0) {
   $guardian = '';
   $maritalstatus = '';
   $parity = '';
+  $pregnancy = '';
   $location = '';
   $village = '';
   $postaladdress = '';
@@ -75,6 +77,7 @@ if ($count == 0) {
   $facility = '';
   $saledate = '';
   $city = '';
+  $idreg = '';
   $beneficiarytitle = 'Enter New ';
   $vouchertitle = 'Enter New ';
   $beneficiary = 'new';
@@ -83,12 +86,12 @@ if ($count == 0) {
   $nationalid_blank = "XXXXXXXXXXXXXX";
   $sql = pg_query(
       $conn,
-      "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where nationalid='$nationalid_blank'"
+      "SELECT voucherserial,nationalid,distributorno,saledate,idreg FROM vouchersales where nationalid='$nationalid_blank'"
   );
 } else {
   $sql = pg_query(
       $conn,
-      "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where nationalid='$nationalid'"
+      "SELECT voucherserial,nationalid,distributorno,saledate, idreg FROM vouchersales where and idreg = '$idreg' and nationalid='$nationalid'"
   );
 }
 

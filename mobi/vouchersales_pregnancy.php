@@ -36,6 +36,27 @@ if ( ! $result) {
   echo "Error with query: ".$errormessage;
   exit();
 }
+
+$pregQuery
+    = "UPDATE pregnancyregistration SET closed=TRUE where idbeneficiarymaster = (select idbeneficiarymaster from beneficiarymaster where lower(trim(nationalid))=lower(trim('$nationalid')))";
+//echo '<br />'.$query.'<br />';
+$result = pg_query($pregQuery);
+if ( ! $result) {
+  $errormessage = pg_last_error();
+  echo "Error with query: ".$errormessage;
+  exit();
+}
+
+$saleQuery
+    = "UPDATE vouchersales SET closed=TRUE where lower(trim(nationalid))=lower(trim('$nationalid'))";
+
+$result = pg_query($saleQuery);
+if ( ! $result) {
+  $errormessage = pg_last_error();
+  echo "Error with query 1: ".$errormessage;
+  exit();
+}
+
 pg_close();
 ?>
 <h3 style="text-align: center; color: green;">Second Pregnancy Activation

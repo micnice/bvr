@@ -71,8 +71,12 @@
 </tr>
 <tr class="lime">
     <td><font size="4">Parity:</font></td>
-    <td colspan="3"><input type="text" size="30" maxlength="50"
+    <td><input type="text" size="30" maxlength="50"
                            value="<?php echo trim($parity); ?>" name="parity">
+    </td>
+    <td><font size="4">Pregnancy #:</font></td>
+    <td><input type="text" size="40" maxlength="40"
+               value="<?php echo trim($pregnancy); ?>" name="pregnancy">
     </td>
 </tr>
 <tr class="lime">

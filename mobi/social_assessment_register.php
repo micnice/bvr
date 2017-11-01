@@ -28,6 +28,12 @@ if ($dob == '') {
   $dob = '';
 }
 
+$pregnancy = $_POST['pregnancy'];
+if ($pregnancy == '') {
+  echo "Please enter Pregnancy Number";
+  exit();
+}
+
 $lmp = $_POST['lmp'];
 if ($lmp == '') {
   $lmp = '';
@@ -104,15 +110,32 @@ if (strcmp($beneficiary, 'update') == 0) {
     echo "Error with query: ".$errormessage;
     exit();
   }
+  $pregnancyQuery = "insert into pregnancyregistration (lmp, reg_date, edd, pregnancy, parity, idbeneficiarymaster) values('$lmp', '$dateadded', '$edd', '$pregnancy', '$parity', (select idbeneficiarymaster from beneficiarymaster where nationalid='$nationalid'))";
+
+  $result =pg_query($pregnancyQuery);
+  if ( ! $result) {
+    $errormessage = pg_last_error();
+    echo "Error with query: ".$errormessage;
+    exit();
+  }
 } else {
   if (strcmp($beneficiary, 'new') == 0) {
-    $query
+    $beneficiaryQuery
         = "insert into beneficiarymaster (surname,firstname,nationalid,dob,lmp,sex,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city,addedby,reg_date) "
         ."values('$surname','$firstname','$nationalid','$dob','$lmp','$sex','$edd','$guardian','$maritalstatus','$parity','$location','$village','$postaladdress','$serialno',$phone,'$city','$username','$dateadded')";
     //echo '<br />'.$query.'<br />';
 
-    $result = pg_query($query);
+    $result = pg_query($beneficiaryQuery);
 
+    if ( ! $result) {
+      $errormessage = pg_last_error();
+      echo "Error with query: ".$errormessage;
+      exit();
+    }
+
+    $pregnancyQuery = "insert into pregnancyregistration (lmp, reg_date, edd, pregnancy, parity, idbeneficiarymaster) values('$lmp', '$dateadded', '$edd', '$pregnancy', '$parity', (select idbeneficiarymaster from beneficiarymaster where nationalid='$nationalid'))";
+
+    $result =pg_query($pregnancyQuery);
     if ( ! $result) {
       $errormessage = pg_last_error();
       echo "Error with query: ".$errormessage;

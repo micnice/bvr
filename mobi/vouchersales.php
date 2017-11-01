@@ -32,8 +32,8 @@ if (isset($_POST['pregnancy'])) {
 
 $sql = pg_query(
     $conn,
-    "SELECT nationalid,firstname,surname,dob,sex,lmp,edd,guardian,maritalstatus,parity,location,village,postaladdress,serialno,phone,city"
-    ." FROM beneficiarymaster where upper(nationalid)='$nationalid'"
+    "SELECT b.nationalid, b.firstname, b.surname, b.dob, b.sex, p.lmp, p.edd, b.guardian, b.maritalstatus, p.parity, b.location, b.village, b.postaladdress, b.serialno, b.phone, b.city, p.pregnancy, p.idreg"
+    ." FROM beneficiarymaster b, pregnancyregistration p where p.closed=FALSE and upper(b.nationalid)='$nationalid'"
 );
 
 $count = 0;
@@ -57,6 +57,8 @@ while ($row = pg_fetch_row($sql)) {
   $serialno = $row[13];
   $phone = $row[14];
   $city = trim($row[15]);
+  $pregnancy = $row[16];
+  $idreg = $row[17];
   $beneficiarytitle = 'Update ';
   $beneficiary = 'update';
 }
@@ -83,13 +85,15 @@ if ($count == 0) {
   $beneficiarytitle = 'Enter New ';
   $vouchertitle = 'Enter New ';
   $beneficiary = 'new';
+  $pregnancy = '';
+  $idreg = '';
 
   include_once '../generate_nationalid.php';
 }
 
 $sql = pg_query(
     $conn,
-    "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where nationalid='$nationalid'"
+    "SELECT voucherserial,nationalid,distributorno,saledate FROM vouchersales where closed=FALSE and idreg=$idreg and nationalid='$nationalid'"
 );
 
 $count = 0;
@@ -108,7 +112,7 @@ if ($count == 0 || $pregnancy == 2) {
   $voucher = 'new';
   $vouchertitle = 'Enter New ';
   if ($pregnancy == 2) {
-    $vouchertitle = '(<font color=red>Second Pregnancy</font>) Enter New ';
+    $vouchertitle = '(<font color=red>Next Pregnancy</font>) Enter New ';
   }
 }
 ?>
