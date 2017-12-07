@@ -6,7 +6,7 @@ if (strcmp($_SESSION['login'], 'false') == 0) {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $query
-        = "SELECT * FROM users WHERE username = '$username' AND password = md5('$password') and userrole in ('admin','NPA', 'verifier');";
+        = "SELECT * FROM users WHERE username = '$username' AND password = md5('$password') and userrole in ('admin','NPA', 'verifier','Accounts');";
     $result = pg_query($conn, $query);
     $row = pg_fetch_array($result, 0);
     //echo $query;
@@ -247,7 +247,7 @@ if (strlen($role) == 0) {
                 </div>
                 <?php
             }
-            $acl = array("verifier");
+            $acl = array("verifier", "Accounts");
             if (in_array($role, $acl)) {
                 ?>
                 <div class="silverheader" id="MainRegister"><a class="active" href="#one">Beneficiary
@@ -258,6 +258,47 @@ if (strlen($role) == 0) {
                                 Beneficiary</a></li>
                     </ul>
                 </div>
+                <?php
+            }
+
+            $acl = array("Accounts");
+            if (in_array($role, $acl)) {
+                ?>
+                <div class="silverheader" id="Claims"><a class="" href="#three">Invoicing
+                        &AMP; Claims Processing</a></div>
+                <div class="submenu">
+                    <ul>
+                        <li id="PrintInvoice"><a
+                                    href="main.php?page=invoice_form">Print Health
+                                Facility Invoice</a></li>
+                        <li id="PrintInvoice"><a
+                                    href="main.php?page=cboinvoice_form">Print CBO
+                                Invoice</a></li>
+                    </ul>
+                </div>
+                <?php
+            }
+            $acl = array("Accounts");
+            if (in_array($role, $acl)) {
+
+                ?>
+                <div class="silverheader" id="SystemSetup"><a class=""
+                                                              href="#three">Reports</a>
+                </div>
+                <div class="submenu">
+                    <ul>
+
+                        <li id="DisburseVouchers"><a
+                                    href="main.php?page=partially_redeemed_form">Partially
+                                Redeemed Vouchers</a></li>
+                        </li>
+                        <li id="Summary"><a href="voucherapprovedsummary_form.php"
+                                            onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
+                                            target="_blank">Vouchers Approved</a>
+                        </li>
+                    </ul>
+                </div>
+
                 <?php
             }
 
