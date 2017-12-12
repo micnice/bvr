@@ -242,6 +242,8 @@ if (strlen($role) == 0) {
                         <li id="Summary"><a href="mobi/cbosamples_form.php"
                                             onclick="return !window.open(this.href, 'Google', 'width=1200,height=700')"
                                             target="_blank">CBO samples</a></li>
+                        <li id="CBOScore"><a
+                                    href="main.php?page=cboscore_edit_form">Delete Questionnaire</a></li>
 
                     </ul>
                 </div>
@@ -274,8 +276,7 @@ if (strlen($role) == 0) {
                         <li id="PrintInvoice"><a
                                     href="main.php?page=cboinvoice_form">Print CBO
                                 Invoice</a></li>
-                    </ul>
-                </div>
+
                 <?php
             }
             $acl = array("Accounts");
@@ -340,18 +341,6 @@ if (strlen($role) == 0) {
                                                target="_blank">Approved Claims</a>
                     </ul>
                 </div>
-                <?php
-            }
-
-            $acl = array("admin");
-            if (in_array($role, $acl)) {
-
-                ?>
-                <li id="CBOScore"><a
-                            href="main.php?page=cboscore_edit_form">Delete
-                        Questionnaire</a></li>
-                <?php
-            }
 
             $acl = array("NPA", "admin");
             if (in_array($role, $acl)) {
