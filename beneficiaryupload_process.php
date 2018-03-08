@@ -87,6 +87,20 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
     $city = 'null';
   }
 
+  $lmp = $data[14];
+  if ($lmp == '') {
+      $lmp = null;
+  }
+
+  $parity = $data[15];
+  if ($parity == '') {
+      $parity = null;
+  }
+
+  $maritalStatus = $data[16];
+  if ($maritalStatus == '') {
+      $maritalStatus = null;
+  }
 
   if (is_numeric($phone)) {
   } else {
@@ -101,8 +115,8 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
   $uploadtime = date('d/m/Y h:i');
   $delrec = "DELETE from beneficiarymaster where nationalid='$nationalid'";
   $import
-      = "INSERT into beneficiarymaster (serialno,surname,firstname,dob,nationalid,idhousehold,location,village,area,city,phone,bvrnumber,reg_date,uploadtime,uploadfilename,addedby)"
-      ." values($serialno,'$surname','$firstname','$dob','$nationalid','$idhousehold','$location','$suburb','$area','$city',$phone,$bvrnumber,'$registrationdate','$uploadtime','$uploadfilename','$username')";
+      = "INSERT into beneficiarymaster (serialno,surname,firstname,dob,nationalid,idhousehold,location,village,area,city,phone,bvrnumber,reg_date,uploadtime,uploadfilename,addedby, lmp, parity, maritalstatus)"
+      ." values($serialno,'$surname','$firstname','$dob','$nationalid','$idhousehold','$location','$suburb','$area','$city',$phone,$bvrnumber,'$registrationdate','$uploadtime','$uploadfilename','$username','$lmp','$parity','$maritalStatus')";
 
   try {
     $result1 = pg_query($delrec);
